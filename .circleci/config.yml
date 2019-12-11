@@ -21,7 +21,7 @@ jobs:
       - run: 
           name: Docker build Backend
           command: |
-            cd backend && docker build -t test .
+            ls -a&& cd backend && docker build -t test .
 
       - save_cache:
           paths:
