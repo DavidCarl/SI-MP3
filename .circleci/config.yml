@@ -11,7 +11,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: Install dependencies
+          # name: Install dependencies
           command: |
             apk add --no-cache \
               py-pip=9.0.0-r1
@@ -20,7 +20,7 @@ jobs:
               awscli==1.11.76
 
       - run: 
-        name: Docker build Backend
+        # name: Docker build Backend
         command: |
           cd backend && docker build -t test .
 
