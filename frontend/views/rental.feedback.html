@@ -1,0 +1,45 @@
+<html>
+    <body>
+        <h1>User experience feedback</h1>
+        <label>rating <span id="propertyFeedbackText"></span>
+        <input type="range" min="1" max="10" step="1" id="propertyFeedback"/></label>
+        <br/>
+        <br/>
+        <p>please write a short feedback message on the car rental experience</p><textarea rows="4" cols="50" id="area"></textarea>
+        <br/>
+        <br/>
+        <button id="submitButton">submit</button>
+        <script>    
+            var slider = document.getElementById("propertyFeedback");
+            var output = document.getElementById("propertyFeedbackText");
+            var submitButton = document.getElementById("submitButton");
+            
+            output.innerHTML = slider.value; // Display the default slider value 
+            
+            slider.oninput = function() {
+                output.innerHTML = this.value;
+            } 
+
+            submitButton.onclick = function(){
+                var payload = {}
+                payload['grading'] = slider.value;
+                payload['comment'] = document.getElementById('area').value
+                console.log(payload)
+                sendFeedback("http://localhost:3001/v1/feedbacksurvey", payload)
+            }
+
+            function sendFeedback(url, payload){
+                fetch(url, {
+                    method:"POST",                    
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(response => response.status)
+                .then(status => console.log(status))
+            }
+
+        </script>
+    </body>
+</html>

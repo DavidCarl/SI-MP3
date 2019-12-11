@@ -1,0 +1,109 @@
+<html>
+    <body>
+        <h1>rental of cars</h1>
+        <div id='selectors'>
+            <p>Select brand:</p>
+            <select id="brands" onchange="brandSelected(this)">
+                <option>Choose a brand</option>
+            </select>
+        </div>
+        <script>
+            
+            function populate(lst, select) {
+                lst.forEach(e => {
+                    let el = document.createElement("option");
+                    el.textContent = e.brand_name;
+                    el.value = e.brand_name;
+                    el.dataset.id = e.id;
+                    select.appendChild(el);                    
+                });
+            }
+
+            async function loadBrands() {
+                let brands = await getApi('http://localhost:3001/v1/brands');
+                let selectBrand = document.getElementById('brands');
+                populate(brands, selectBrand);
+            }
+            
+            function populateCar(lst, select) {
+                lst.forEach(e => {
+                    console.log(e)
+                    let el = document.createElement("option");
+                    el.textContent = e.model_name;
+                    el.value = e.model_name;
+                    el.dataset.id = e.id;
+                    select.appendChild(el);                    
+                });
+            }
+
+            async function loadCars(brand) {
+                let cars = await getApi('http://localhost:3001/v1/cars/' + brand);
+                let selectDiv = document.getElementById('selectors');
+                let selectCar = document.createElement("select");
+                selectCar.id = 'car';
+                let el = document.createElement("option");
+                el.textContent = 'Select a car';
+                selectCar.appendChild(el);
+                selectDiv.appendChild(selectCar);
+                populateCar(cars, selectCar);
+
+                let button = document.createElement("button");
+                button.id = "rentButton"
+                button.addEventListener("click", function() {
+                    let car = document.getElementById('car')
+                    let i = car.selectedIndex
+                    let id = car.options[i].dataset.id
+                    rentCar(id)
+                })
+                button.textContent = "Rent car"
+                selectDiv.appendChild(button);
+            }
+
+            async function rentCar(id) {
+                fetch('http://localhost:3001/v1/rent/' + id, {
+                    method: "GET",                    
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+                })
+            }
+            
+            async function getApi(url){
+                return await fetch(url, {
+                    method:"GET",                    
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json());
+            }
+            
+            function brandSelected(e) {
+                try{
+                    let car = document.getElementById("car");
+                    car.parentNode.removeChild(car);
+                }
+                catch(error){
+                    console.log(error)
+                }
+
+                try{
+                    let rentButton = document.getElementById("rentButton");
+                    rentButton.parentNode.removeChild(rentButton);
+                }
+                catch(error){
+                    console.log(error)
+                }
+
+                if(e.selectedIndex == 0){
+                    return
+                } 
+                let brand = e.options[e.selectedIndex].value;
+                loadCars(brand);
+            }
+            
+            loadBrands();
+
+        </script>
+    </body>
+</html>

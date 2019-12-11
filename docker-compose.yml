@@ -1,0 +1,30 @@
+version: '3'
+
+services: 
+    db:
+        image: mysql:8.0.16
+        ports: 
+            - '3306:3306'
+        environment: 
+            - MYSQL_ROOT_PASSWORD=some_password
+        restart: unless-stopped
+
+    backend:
+        image: some-image
+        ports:
+            - '88:3001'
+        links:
+            - db
+        depends_on:
+            - db
+        restart: unless-stopped
+        
+    frontend:
+        image: some-image
+        ports:
+            - '80:3000'
+        links:
+            - backend
+        depends_on:
+            - backend
+        restart: unless-stopped
