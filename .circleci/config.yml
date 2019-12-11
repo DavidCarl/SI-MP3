@@ -19,7 +19,10 @@ jobs:
     steps:
       - checkout
 
-      - run: cd backend && docker build -t test .
+      - run: 
+        name: Docker build Backend
+        command: |
+          cd backend && docker build -t test .
 
       - save_cache:
           paths:
