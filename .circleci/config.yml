@@ -22,9 +22,9 @@ jobs:
       - run: 
           name: Docker build Backend
           command: |
-            ls -all && cd backend && docker build -t test .
+            ls -all && cd backend && docker build -t backend .
 
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+      - run: 
+          name: Docker build Backend
+          command: |
+            ls -all && cd frontend && docker build -t frontend .
